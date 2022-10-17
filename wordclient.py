@@ -22,7 +22,24 @@ def get_next_word_packet(s):
 
     global packet_buffer
 
-    # TODO -- Write me!
+    while True:
+
+        packet_buffer += s.recv(5)
+
+        if packet_buffer != b'':
+            packet_length = (int.from_bytes((packet_buffer[:WORD_LEN_SIZE]), "big")) + WORD_LEN_SIZE
+
+            while len(packet_buffer) < packet_length:
+                packet_buffer += s.recv(5)
+
+            word_packet = packet_buffer[:packet_length] 
+            packet_buffer = packet_buffer[packet_length:]
+            
+            return word_packet
+
+        else:
+            return None
+
 
 
 def extract_word(word_packet):
@@ -34,8 +51,8 @@ def extract_word(word_packet):
 
     Returns the word decoded as a string.
     """
-
-    # TODO -- Write me!
+    extract_word_packet = word_packet[2:].decode()
+    return extract_word_packet
 
 # Do not modify:
 
